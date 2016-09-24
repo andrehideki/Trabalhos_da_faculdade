@@ -1,8 +1,10 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include "Pilha.h"
 
 void incializar_pilha(pilha* op){
 	op->topo = -1;
+	printf("Pilha inicializada com sucesso!\nTopo = %d\n\n",op->topo);
 }
 
 int esta_cheia(pilha* op){
@@ -19,15 +21,17 @@ int push(pilha *ope ,char op){//Empilha um operador
 		return 0;
 	}else{
 		ope->op[++ope->topo] = op;
+		printf("\nTopo = %d\n",ope->topo);
 		return 1;
 	}
 
 }
 
-char pop(pilha *op){
+char pop(pilha *ope){
 	/*if(esta_vazia(op))
 		printf("Esta vazia\n");*/
-    op->topo--;
-	return op->op[op->topo];
+    --(ope->topo);
+
+	return ope->op[(ope->topo)+1];
 
 }

@@ -3,12 +3,12 @@ typedef struct Operadores{
 	int topo;
 }operadores;
 
-void incializar_pilha();
-int esta_cheia(operadores *);
-int esta_vazia(operadores *);
-int push(operadores *,char op);//Empilha um operador
-int pop(operadores *);
-void exibe_pilha(operadores *);//Exibe a pilha inteira
+void ope_incializar_pilha();
+int ope_esta_cheia(operadores *);
+int ope_esta_vazia(operadores *);
+int ope_push(operadores *,char op);//Empilha um operador
+int ope_pop(operadores *);
+void ope_exibe_pilha(operadores *);//Exibe a pilha inteira
 
 
 

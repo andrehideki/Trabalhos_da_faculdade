@@ -1,18 +1,18 @@
 #include "Operadores.h"
 
-void incializar_pilha(operadores *ope){
-	ope->topo= 1-;
+void ope_incializar_pilha(operadores *ope){
+	ope->topo= -1;
 }
 
-int esta_cheia(operadores *ope){
+int ope_esta_cheia(operadores *ope){
 	return ope->topo+1 >= 100;
 }
 
-int esta_vazia(operadores *ope){
+int ope_esta_vazia(operadores *ope){
 	return ope->topo+1<=0;
 }
 
-int push(operadores *ope ,char op){//Empilha um operador
+int ope_push(operadores *ope ,char op){//Empilha um operador
 	if(esta_cheia()){
 		printf("A lista esta cheia!\n");
 		return 0;
@@ -23,7 +23,7 @@ int push(operadores *ope ,char op){//Empilha um operador
 
 }
 
-char pop(operadores *ope){
+char ope_pop(operadores *ope){
 	if(esta_vazia()){
 		printf("Esta vazia\n");
 		return 0;
@@ -31,7 +31,7 @@ char pop(operadores *ope){
 		ope->topo--;
 		return ope->op[topo];
 	}
-	
+
 }
 
 void exibe_pilha(operadores *ope){//Exibe a pilha inteira

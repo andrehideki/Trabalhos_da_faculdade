@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include <stdlib.h>
-#include "Operadores.h"
-#include "Operandos.h"
+#include "Pilha.h"
 /*
 	1-Pedir e ler a expressão digitada pelo usuario
 	2-Ler esse vetor,separar em vetores separados um para operadores e outro para operandos
@@ -18,7 +17,7 @@
 */
 
 
-void le_expressao(operadores *ope ,operandos *opn,char c,int *auxi,int *auxf){
+void le_expressao(pilha *operadores ,pilha *operandos,char c,int *auxi,int *auxf){
 	switch(c){
 		case 40://(
 			auxi++;
@@ -27,11 +26,11 @@ void le_expressao(operadores *ope ,operandos *opn,char c,int *auxi,int *auxf){
 		case 42://+
 		case 43://*
 		case 45://-
-			ope_push(ope ,c);//Empilha na pilha de Operadores
+			push(operadores ,c);//Empilha na pilha de Operadores
 			break;
 		case 48://48 é o decimal do caractere'0'
 		case 57://57 é o decimal do caractere'9'
-			opn_push(opn,c);//Empilha na pilha de Operandos
+			push(operandos,c);//Empilha na pilha de Operandos
 			break;
 		default:
 			printf("Operador ou numero invalido!!!");//Coisas ruins podem acontecer!
@@ -39,49 +38,56 @@ void le_expressao(operadores *ope ,operandos *opn,char c,int *auxi,int *auxf){
 		}
 
 }
-int resolve_expressao(operadores *ope ,operandos *opn,char expressao[]){
+//3
+int resolve_expressao(pilha* operadores ,pilha* operandos,char expressao[]){
 	int i=0,res;
+	int auxi=0,auxf=0;//Variaveis de controle
 	char c;
 
-	int auxi=0,auxf=0;//Variavel de controle
 	do{
 		c=expressao[i];
-		le_expressao(ope,opn,c,&auxi,&auxf);
+		le_expressao(operadores,operandos,c,&auxi,&auxf);
 
 		if(auxf){	//Se auxf != 0 ele entra aqui e realiza a operação
 			/*
-				1.Desempilha ) e zera auxf
-				2.Realiza a operação com os dois primeiros operandos + o primeiro operador
-				3.Desempilha Operador , desempilha 2 primeiros operandos
-				4.Empilha o resultado da operação;
+                Se der true:
+                    1.Desempilha ) e zera auxf
+                    2.Realiza a operação com os dois primeiros operandos + o primeiro operador
+                    3.Desempilha Operador , desempilha 2 primeiros operandos
+                    4.Empilha o resultado da operação;
 			*/
-			ope_pop(ope);
+			pop(operadores);
 			auxf--;
-			res=atoi(opn_pop(opn))+atoi(ope_pop(ope))+atoi(opn_pop(opn));//res recebe a soma das conveções para int dos 2 ultimos operandos e operador
-			opn_push(opn,res);
+			res = atoi(pop(operandos))+atoi(pop(operadores))+atoi(pop(operandos));//res recebe a soma das conveções para int dos 2 ultimos operandos e operador
+			push(operandos,res);
 		}
 
 		i++;
-	}while(i==100||auxi=0);//Quando o auxi zerar quer dizer a expressão terminou
-	return opn_pop(opn);
+	}while(i==100||auxi==0);//Quando o auxi zerar quer dizer a expressão terminou
+	return pop(operandos);
 }
 
 
 int main(){
 
-	//Incializar as pilhas...
-	operandos opn;
-	operadores ope;
-	opn_incializar_pilha(opn);
-	ope_incializar_pilha(ope);
+	//1-Cria 2 pilhas e jpa incializa em seguida...
+	pilha operadores;
+	pilha operandos;
+	incializar_pilha(&operadores);
+	incializar_pilha(&operandos);
 
-	//1-Lê uma expressão digitada pelo usuário
+	//2-Lê uma expressão digitada pelo usuário
 	char expressao[100];
-	printf("Digite uma expressao:n>>>");
+	printf("Digite uma expressao:\n>>>");
 	scanf("%100[^\n]",expressao);
 
-	//2-Ler
-	printf("%d\n",resolve_expressao(ope,opn,expressao));	//imprime o resultado da operação;
+	/*3-Imprime o resultado da expressaõ através da função "resolve_expressão"
+
+
+
+
+	*/
+	printf("%d\n",resolve_expressao(&operadores,&operandos,expressao));	//imprime o resultado da operação;
 
 
 	getchar();

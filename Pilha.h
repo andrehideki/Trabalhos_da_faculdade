@@ -1,40 +1,15 @@
-typedef struct Operadores{
+typedef struct Pilha{
 	char op[100];
 	int topo;
-}operadores;
-
-typedef struct Operandos{
-	char opn[100];
-	topo;
-}operandos;
+}pilha;
 
 
-void incializar_pilha(){
-	
-}
+void incializar_pilha(pilha*);//Incializa a pilha de operadores ou operandos
+int esta_cheia(pilha *);//Verifica se a pilha está cheia
+int esta_vazia(pilha *);//Verifica se a pilha está vazia
+int push(pilha *,char op);//Empilha operando ou operador
+char pop(pilha *);//Desempilha operando
 
-
-int esta_cheia(){
-	
-}
-
-int esta_vazia(){
-	
-}
-
-int push(){
-	
-	
-}
-
-int pop(){
-	
-	
-}
-
-void exibe_pilha(){
-	
-}
 
 
 

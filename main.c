@@ -2,24 +2,41 @@
 #include <stdlib.h>
 #include<string.h>
 #include "Pilha.h"
-/*
-	1-Pedir e ler a expressão digitada pelo usuario
-	2-Ler esse vetor,separar em vetores separados um para operadores e outro para operandos
-		40-(
-		41-)
-		42-*
-		43-+
-		45--
-		47-/
 
-		Caso o operador for ')' incrementa 1 a variavel auxf , pois depois de sair do switch ele cai no frag e realiza os procedimentos nescessarios
-		de empilhamento e desempilhamentpo
+/*
+	Resumo do código:
+	1-Incializa pilhas
+	2-Le uma expressão do usuario
+	3-Joga a expressão coletada para a função resolve_expressao()
+		Que sera responsavel pelo controle de ler a expressão inteira atraves da função le_expressao();
+			Função le_expressao()
+				É responsavel por empilhar ,na pilha correspondente ,o caractere passado nos argumentos e 
+				incementar 1 na variavel auxi e auxf que servem de controle na hora da resosução da
+				expressão digitada pelo usuario	
+		Quando auxf = 1 ,(incrementado quando le_expressao acha ')'), 
+			ele desempilha os ultimo 2 operandos ,3 operadores e realiza
+			as operações nescessarias.
+		Quando c = '\0 'quer dizer que a expressão terminou e 
+			já foram feitos os processos nescessarios para a 
+			conclusão do algoritimo.  
+	
 
 */
-
+void imprime_intrucoes(){
+	
+	printf("==========ALGORITIMO DE DIJKSTRA v1.0==========\n\n");
+	printf("------------------------------------------\n\n");
+	printf("->>INSTRUCOES:\n\n");
+	printf("\t1-Operacoes devem ser feitas somente dentro de parenteses;\n");
+	printf("\t2-O programa processa somente as operacoes:\n");
+	printf("\t\tSoma\t\t+\n");
+	printf("\t\tSubtracao\t-\n");
+	printf("\t\tMultiplicacao\t*\n\n");
+	printf("-------------------------------------------\n\n");
+}
 
 int le_expressao(pilha *operadores ,pilha *operandos,char c,int *auxi,int *auxf){
-
+	
 	if(c>=48&&c<=57){
 	    if(push(operandos,c)){//Empilha na pilha de Operandos
             printf("%c empilhado na pilha de operandos\n",c);
@@ -27,12 +44,12 @@ int le_expressao(pilha *operadores ,pilha *operandos,char c,int *auxi,int *auxf)
 	}else if(c==40||c==41||c==42||c==43||c==45){
         if(c==40){
             ++(*auxi);
-            printf("auxi = %d\n",*auxi);
+            //printf("auxi = %d\n",*auxi);
         }
 
         if(c==41){
             ++(*auxf);
-            printf("auxf = %d\n",*auxf);
+            //printf("auxf = %d\n",*auxf);
         }
         if(push(operadores,c)){//Empilha na pilha de Operadores
             printf("%c empilhado na pilha de operadores\n",c);
@@ -46,87 +63,122 @@ int le_expressao(pilha *operadores ,pilha *operandos,char c,int *auxi,int *auxf)
     getchar();
     return 0;
 }
-//3
+
+
 int resolve_expressao(pilha* operadores ,pilha* operandos,char expressao[]){
-	int i=0,res;
+	int i=0,resultado;
 	int auxi=0,auxf=0,tam_expressao = strlen(expressao)-1;//Variaveis de controle
 	char c;
 
-    printf("Esta cheia?%s\ntopo = %d\n",esta_cheia(operadores)?"sim":"Nao",operadores->topo);//linha teste
-	printf("Esta cheia?%s\ntopo = %d\n",esta_cheia(operandos)?"sim":"Nao",operandos->topo);//linha teste
     getchar();
-	do{
-		c=expressao[i];
+    c=expressao[i];
+    
+	while(auxi>=0||i!=tam_expressao-1||c!='\0'){
+		
 		if(le_expressao(operadores,operandos,c,&auxi,&auxf)){
             printf("Falha na leitura da expressao!\n");
             return 1;
-		}
-
+		}		
 		if(auxf==1){	//Se auxf != 0 ele entra aqui e realiza a operação
-            printf("Agora o auxf ta valendo 1\n");
-			/*
-                Se der true:
-                    1.Desempilha ) e zera auxf
-                    2.Realiza a operação com os dois primeiros operandos + o primeiro operador
-                    3.Desempilha Operador , desempilha 2 primeiros operandos
-                    4.Empilha o resultado da operação;
-			*/
-			auxi--;
+ 			
 			auxf--;
 			pop(operadores);
-            printf("Desempilhou ')'\n");
+            printf(") desempilhado da pilha de operadores\n");
+            auxi--;
+            //printf("Agora o auxf ta valendo 1\n");	
 
-            int num1 = atoi(pop(operandos));
-            printf("num1 =%d\n",num1);
+            int num1 = (int)pop(operandos)-48;
+            int num2 =  (int)pop(operandos)-48;
+            getchar();
+            printf("Operador desempilhado da pilha de operadores\n");
             switch(pop(operadores)){
-            case '+':
-                res = num1+pop(operandos);
+            case 43:
+                resultado = num1+num2;
+                printf("%d + %d\n",num1,num2);
                 break;
-            case '-':
-                res = num1-pop(operandos);
+            case 45:
+                resultado = num1-num2;
+                printf("%d - %d\n",num1,num2);
                 break;
-            case '*':
-                res = num1*pop(operandos);
+            case 42:
+                resultado = num1*num2;
+                printf("%d * %d\n",num1,num2);
                 break;
             }
-			//res = (atoi(pop(operandos)))+(atoi(pop(operadores)))+(atoi(pop(operandos)));//res recebe a soma das conveções para int dos 2 ultimos operandos e operador
-			push(operandos,res);
-			printf("res = %d",res);
-		}
+			
+			pop(operadores);
+            printf("Desempilhou '('\n");
+			
+			push(operandos,(char)resultado+48);
+            printf("Resultado atual = %d\n",resultado);
 
-		i++;
-	}while(auxi<=1||i==tam_expressao-1);//Quando o auxi zerar quer dizer a expressão terminou
+		
+		}
+		++i;
+		
+		c=expressao[i];
+		if(c == '\0'){
+			break;	
+		}	
+	}
 	return 0;
 }
 
 
 int main(){
-
-	//1-Cria 2 pilhas e jpa incializa em seguida...
+	
+	
+	int sair=0,opc_sair;//sair = false
+	char expressao[100];
+	
+	//1-Duas pilhas são criadas...
 	pilha operadores;
 	pilha operandos;
-	incializar_pilha(&operadores);
-	incializar_pilha(&operandos);
-
-	printf("Esta cheia?%s\n",esta_cheia(&operadores)?"sim":"Nao");//linha teste
-	printf("Esta cheia?%s\n",esta_cheia(&operandos)?"sim":"Nao");//linha teste
-
-
+		
 	//2-Lê uma expressão digitada pelo usuário
-	char expressao[100];
-	printf("Digite uma expressao:\n>>>");
-    //scanf("%100[^\n]",expressao);
-    fgets(expressao,100,stdin);
-	/*3-Imprime o resultado da expressaõ através da função "resolve_expressão"
-	*/
-	if(resolve_expressao(&operadores,&operandos,expressao)){
-        printf("Falhou!\n");
-        getchar();
-        exit(1);
+		
+	while(!sair){
+		
+		system("cls");
+		imprime_intrucoes();
+		incializar_pilha(&operadores);
+		incializar_pilha(&operandos);
+		
+		printf("--------------------------------------\n");
+		printf("\nDigite uma expressao:\n>>>  ");
+	    fgets(expressao,100,stdin);
+	    fflush(stdin);
+		expressao[strlen(expressao)-1] = '\0';
+		
+		
+		/*3-Imprime o resultado da expressaõ através da função "resolve_expressão"
+		*/
+		if(resolve_expressao(&operadores,&operandos,expressao)){
+	        printf("Falhou!\n");
+	        getchar();
+	        exit(1);
+		}
+		printf("----------------------------------------------\n");
+		printf("\nOperacao finalizada com sucesso!\n\n");
+		printf("Operacao:\t%s\nResultado final da operacao:\t%d\n\n",expressao,(int)pop(&operandos)-48);
+		getchar();
+		fflush(stdin);
+		system("cls");
+		
+		printf("Deseja realizar outra operacao?\n\t'1'para sim;\n\t'0'para nao;\n>>>  ");
+		scanf("%d",&opc_sair);
+		fflush(stdin);
+		if(!opc_sair){
+			system("cls");
+			printf("\nAplicacao finalizada com sucesso !\nPressione qualquer tecla para sair...\n");
+			getchar();
+			sair = 1;
+			
+		}
+		system("cls");
+		
 	}
-	printf("%d\n",pop(&operandos));	//imprime o resultado da operação;
-
-
-	getchar();
+	
 	return 0;
 }
+
